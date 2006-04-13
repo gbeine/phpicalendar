@@ -166,11 +166,7 @@ class ReportParser
         }
 
         if (count($this->_names) == 2 && end($this->_names) == 'prop') {
-            $prop = array('name' => $name);
-
-            if ($ns) {
-                $prop['ns'] = $ns;
-            }
+            $prop = array('name' => $name, 'ns' => $ns);
 
             if ($name == 'calendar-data') {
                 $prop['value'] = array();
@@ -183,32 +179,24 @@ class ReportParser
         }
 
         if ($name == 'comp') {
-            end($this->_comps);
-
-            // Gross - end returns a copy of the last value
-            $comp =& $this->_comps[key($this->_comps)];
-
-            if (!is_array($comp['comps'])) {
-                $comp['comps'] = array();
+            if (!is_array($this->_comps[count($this->_comps) - 1]['comps'])) {
+                $this->_comps[count($this->_comps) - 1]['comps'] = array();
             }
 
-            $comp['comps'][$attrs['name']] = array();
-            $this->_comps[] =& $comp['comps'][$attrs['name']];
+            $this->_comps[count($this->_comps) - 1]['comps'][$attrs['name']] =
+                array();
+            $this->_comps[] =& $this->_comps[count($this->_comps) - 1]['comps']
+                [$attrs['name']];
             $this->_names[] = $name;
             return;
         }
 
         if (end($this->_names) == 'comp' && $name == 'prop') {
-            end($this->_comps);
-
-            // Gross - end returns a copy of the last value
-            $comp =& $this->_comps[key($this->_comps)];
-
-            if (!is_array($comp['props'])) {
-                $comp['props'] = array();
+            if (!is_array($this->_comps[count($this->_comps) - 1]['props'])) {
+                $this->_comps[count($this->_comps) - 1]['props'] = array();
             }
 
-            $comp['props'][] = $attrs['name'];
+            $this->_comps[count($this->_comps) - 1]['props'][] = $attrs['name'];
             $this->_names[] = $name;
             return;
         }
@@ -220,34 +208,25 @@ class ReportParser
         }
 
         if ($name == 'comp-filter') {
-            end($this->_comps);
-
-            // Gross - end returns a copy of the last value
-            $comp =& $this->_comps[key($this->_comps)];
-
-            if (!is_array($comp['comps'])) {
-                $comp['comps'] = array();
+            if (!is_array($this->_comps[count($this->_comps) - 1]['comps'])) {
+                $this->_comps[count($this->_comps) - 1]['comps'] = array();
             }
 
-            $comp['comps'][$attrs['name']] = array();
-            $this->_comps[] =& $comp['comps'][$attrs['name']];
+            $this->_comps[count($this->_comps) - 1]['comps'][$attrs['name']] =
+                array();
+            $this->_comps[] =& $this->_comps[count($this->_comps) - 1]['comps']
+                [$attrs['name']];
             $this->_names[] = $name;
             return;
         }
 
         if (end($this->_names) == 'comp-filter') {
-            end($this->_comps);
-
-            // Gross - end returns a copy of the last value
-            $comp =& $this->_comps[key($this->_comps)];
-
-            if (!is_array($comp['filters'])) {
-                $comp['filters'] = array();
+            if (!is_array($this->_comps[count($this->_comps) - 1]['filters'])) {
+                $this->_comps[count($this->_comps) - 1]['filters'] = array();
             }
 
-            $filter = array('name' => $name, 'value' => $attrs);
-
-            $comp['filters'][] = $filter;
+            $this->_comps[count($this->_comps) - 1]['filters'][] =
+                array('name' => $name, 'value' => $attrs);
             $this->_names[] = $name;
             return;
         }
