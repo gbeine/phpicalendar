@@ -179,19 +179,6 @@ class iCalendar_component {
     }
     
     function serialize() {
-        // Check for validity of the object
-        if(!$this->is_valid()) {
-            return false;
-        }
-
-        // Maybe the object is valid, but there are some required properties that
-        // have not been given explicit values. In that case, set them to defaults.
-        foreach($this->valid_properties as $property => $propdata) {
-            if(($propdata & RFC2445_REQUIRED) && empty($this->properties[$property])) {
-                $this->add_property($property);
-            }
-        }
-
         // Start tag
         $string = rfc2445_fold('BEGIN:'.$this->name) . RFC2445_CRLF;
 
