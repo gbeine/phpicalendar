@@ -97,6 +97,7 @@ class ReportParser
      */
     function ReportParser($input)
     {
+        // FIXME Take a handle, not a path
         $handle = fopen($input, 'r');
         if (!$handle) {
             return;
