@@ -171,8 +171,8 @@ class HTTP_CalDAV_Server extends HTTP_WebDAV_Server
                     '404 Not Found');
             }
 
-            $parser = new ICalendarParser($handle, null, null,
-                $reqprop['value'], $filters);
+            $parser = new ICalendarParser($handle, null, $reqprop['value'],
+                $filters);
             if (!$parser->success) {
                 return $this->calDavProp('calendar-data', null,
                     '404 Not Found');
