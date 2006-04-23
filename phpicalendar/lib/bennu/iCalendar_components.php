@@ -205,7 +205,6 @@ class iCalendar_component {
 
         return $string;
     }
-
 }
 
 class iCalendar extends iCalendar_component {
@@ -227,7 +226,6 @@ class iCalendar extends iCalendar_component {
         );
         parent::construct();
     }
-
 }
 
 class iCalendar_event extends iCalendar_component {
@@ -306,7 +304,6 @@ class iCalendar_event extends iCalendar_component {
         }
         return true;
     }
-
 }
 
 class iCalendar_todo extends iCalendar_component {
@@ -388,7 +385,6 @@ class iCalendar_timezone extends iCalendar_component {
         
         parent::construct();
     }
-
 }
 
 // REMINDER: DTEND must be later than DTSTART for all components which support both

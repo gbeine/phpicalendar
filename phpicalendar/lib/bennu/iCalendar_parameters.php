@@ -234,7 +234,6 @@ class iCalendar_parameter {
 
     function undo_value_formatting($parameter, $value) {
     }
-
 }
 
 ?>
