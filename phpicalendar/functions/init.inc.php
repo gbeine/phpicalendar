@@ -115,7 +115,7 @@ if (isset($_GET['cal'])) {
 			$calcheck = $calendar_path.'/'.$default_cal_check.'.ics';
 			$calcheckopen = @fopen($calcheck, "r");
 			if ($calcheckopen == FALSE) {
-				$cal_filenames[0] = $default_cal;
+				$cal_filenames = explode(',',$default_cal);
 			} else {
 				$cal_filenames[0] = $default_cal_check;
 			}
@@ -123,7 +123,7 @@ if (isset($_GET['cal'])) {
 			$cal_filenames[0] = $ALL_CALENDARS_COMBINED;
 		}
 	} else {
-		$cal_filenames[0] = $default_cal;
+		$cal_filenames = explode(',',$default_cal);
 	}
 }
 //load cal_filenames if $ALL_CALENDARS_COMBINED
