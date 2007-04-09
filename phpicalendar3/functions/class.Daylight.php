@@ -24,8 +24,6 @@ class Daylight extends Vtimezone {
 	 *
 	 * @access public
 	 */
-	function Daylight() {
-	
-	}
+	function Daylight() {}
 
 } ?>
