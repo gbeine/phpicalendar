@@ -1,14 +1,24 @@
 <?php
-/*=====================class.Vtimezone.php=====================
-
-This class is for calendars.
-
-*/
+/**
+ * File DocBlock.  Documentation here applies to classes, functions, etc. contained in this file,
+ * unless overridden below.
+ * 
+ * @author
+ * @since
+ * @package		
+ * @subpackage
+ */
+/**
+ * This class is for calendars.
+ */
 class Vtimezone extends iCalObj{
-
-	function Vtimezone(){
 	
-	}
+	
+	/**
+	 * Creates a new Vtimezone object.
+	 *
+	 * @access public
+	 */
+	function Vtimezone() {}
 
-}
-?>
+} ?>

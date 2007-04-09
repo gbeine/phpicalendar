@@ -1,16 +1,31 @@
 <?php
-/*=====================class.Settings.php=====================
-Settings for phpicalendar 3
-New creates an object with default settings
-Methods to 
-	overwrite from config.inc.php 
-	read from cookie
-	set cookie
-*/
-
-class Settings{
+/**
+ * File DocBlock.  Documentation here applies to classes, functions, etc. contained in this file,
+ * unless overridden below.
+ * 
+ * @author
+ * @since
+ * @package		
+ * @subpackage
+ * @todo	Add methods to: 1) overwrite from config.inc.php; 2) read from 
+ *			cookie; and 3) set cookie
+ */
+/**
+ * [Optional short description of this class]
+ * 
+ * [Optional long description of this class]
+ *
+ */
+class Settings {
 		
-	function Settings(){
+	/**
+	 * Constructs a new Settings object with defaults.
+	 * 
+	 * Optional long description.
+	 *
+	 * @access public
+	 */
+	function Settings() {
 		$this->template 				= 'default';						// Template support
 		$this->default_view 			= 'day';							// Default view for calendars = 'day', 'week', 'month', 'year'
 		$this->minical_view 			= 'current';						// Where do the mini-calendars go when clicked? = 'day', 'week', 'month', 'current'
@@ -77,6 +92,7 @@ class Settings{
 														// but may not be accurate depending on ftp server config.
 		
 		// Calendar colors
+		//
 		// You can increase the number of unique colors by adding additional images (monthdot_n.gif) 
 		// and in the css file (default.css) classes .alldaybg_n, .eventbg_n and .eventbg2_n
 		// Colors will repeat from the beginning for calendars past $this->unique_colors (7 by default), with no limit.
@@ -87,13 +103,16 @@ class Settings{
 		$this->locked_cals 				= array();		// Fill in-between the quotes the names of the calendars you wish to hide
 		$this->locked_map				= array();		// Map username:password accounts to locked calendars that should be		
 		$this->apache_map		 		= array();		// Map HTTP authenticated users to specific calendars. Users listed here and
-			
-
 	}
 	
-	function setLang(){
 	
+	/**
+	 * Sets the language.
+	 *
+	 * @access public
+	 */
+	function setLang() {
+		
 	}
 
-} # end class Settings
-?>
+} ?>
