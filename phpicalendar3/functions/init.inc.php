@@ -8,9 +8,9 @@
  * @package		
  * @subpackage
  * 
- * @todo Need to set configurations (paths, languages, templates, behaviors)
- * @todo calendar list
- * @todo range of dates to process
+ * @todo	Set configurations: paths, languages, templates, behaviors
+ * @todo	calendar list
+ * @todo	range of dates to process
  */
 
 

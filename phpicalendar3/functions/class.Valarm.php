@@ -23,8 +23,6 @@ class Valarm extends iCalObj {
 	 *
 	 * @access public
 	 */
-	function Valarm() {
-	
-	}
+	function Valarm() {}
 
 } ?>

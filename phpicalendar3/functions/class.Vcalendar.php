@@ -23,8 +23,6 @@ class Vcalendar extends iCalObj {
 	 *
 	 * @access public
 	 */
-	function Vcalendar() {
-	
-	}
+	function Vcalendar() {}
 
 } ?>

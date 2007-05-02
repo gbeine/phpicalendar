@@ -23,8 +23,6 @@ class Standard extends Vtimezone {
 	 *
 	 * @access public
 	 */
-	function Standard() {
-	
-	}
+	function Standard() {}
 
 } ?>

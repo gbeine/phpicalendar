@@ -1,6 +1,7 @@
 <?php
 /**
- * Refactoring of the ical parser in phpicalendar to make the code more maintainable
+ * Refactoring of the ical parser in phpicalendar to make the code more
+ * maintainable.
  * 
  * @author
  * @since
@@ -8,13 +9,13 @@
  * @subpackage
  */
 /**
- * Base class for icalendar objects. Some methods used by all, others only for timed events.
+ * Base class for iCalendar objects. Some methods used by all, others only for
+ * timed events.
  * 
  * [Optional long description of this class]
  *
- * @todo Since version3 of this project is OO, is it necessary for this class
- *		to have the 'Obj' suffix at the end of its name?   
- *
+ * @todo	Since version3 of this project is "OBJECT-oriented", is it necessary
+ *			for this class to have the 'Obj' suffix at the end of its name?
  */
 class iCalObj {
 
@@ -46,12 +47,14 @@ class iCalObj {
 	 * ATTENDEE;CUTYPE=GROUP:MAILTO:ietf-calsch@imc.org
 	 * RRULE:FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1
 	 * 
-	 * Thus, note that key and value are both complex entities that can have multipart info.
+	 * Thus, note that key and value are both complex entities.  
+	 * (They can have multipart info.)
 	 *
 	 * @access public
 	 */
 	function process_line($key, $line) {
-		echo "\tfeed key= $key line=$line to the object of type ".get_class($this)."\n";
+		echo "\tfeed key= $key line=$line to the object of type ".
+			get_class($this)."\n";
 		
 		switch ($key)
 		{
@@ -69,7 +72,9 @@ class iCalObj {
 	 * @access public
 	 */
 	function process_child($obj) {
-		echo "\t".get_class($this)." object processing child of type ".get_class($obj)."\n";
+		echo "\t".get_class($this)." object processing child of type ".
+			get_class($obj)."\n";
+			
 		$this->children[] = $obj;
 	}
 	

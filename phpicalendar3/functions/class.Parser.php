@@ -57,6 +57,7 @@ class Parser {
 	 * Processes the calendar set for the calling Parser object.
 	 *
 	 * @access public
+	 * @alias process_file
 	 */
 	function process_cal() {
 		process_file($this->cal->filename);

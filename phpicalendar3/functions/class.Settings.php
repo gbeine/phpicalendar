@@ -7,14 +7,20 @@
  * @since
  * @package		
  * @subpackage
- * @todo	Add methods to: 1) overwrite from config.inc.php; 2) read from 
- *			cookie; and 3) set cookie
  */
 /**
  * [Optional short description of this class]
  * 
  * [Optional long description of this class]
  *
+ * @todo	Add methods to override from config.inc.php
+ * @todo	Add methods to get/set cookie
+ * @todo	Consider changing the 'yes/no' Settings to true boolean values
+ * @todo	Consider changing settings that store integers as Strings to
+ *			true ints
+ * @todo	Consider changing the legal values of $this->language to the
+ *			language codes used on the web
+ * 			(see http://babelwiki.babelzilla.org/index.php/Language_codes)
  */
 class Settings {
 		
@@ -91,11 +97,12 @@ class Settings {
 														// If = '', will attempt to deduce the path based on $this->calendar_path, 
 														// but may not be accurate depending on ftp server config.
 		
-		// Calendar colors
-		//
-		// You can increase the number of unique colors by adding additional images (monthdot_n.gif) 
-		// and in the css file (default.css) classes .alldaybg_n, .eventbg_n and .eventbg2_n
-		// Colors will repeat from the beginning for calendars past $this->unique_colors (7 by default), with no limit.
+		/* Calendar colors
+		 *
+		 * You can increase the number of unique colors by adding additional images (monthdot_n.gif) 
+		 * and in the css file (default.css) classes .alldaybg_n, .eventbg_n and .eventbg2_n
+		 * Colors will repeat from the beginning for calendars past $this->unique_colors (7 by default), with no limit.
+		 */
 		$this->unique_colors			= '7';
 		$this->blacklisted_cals 		= array();
 		$this->list_webcals 			= array();
@@ -110,9 +117,10 @@ class Settings {
 	 * Sets the language.
 	 *
 	 * @access public
+	 * @todo	Add a check for legal values for $this->language
 	 */
-	function setLang() {
-		
+	function setLang($language) {
+		$this->language = $language;
 	}
 
 } ?>
