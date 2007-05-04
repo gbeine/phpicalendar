@@ -11,8 +11,7 @@
 /**
  * This class is for calendars.
  */
-class Vtimezone extends iCalObj{
-	
+class Vtimezone extends iCalObj {
 	
 	/**
 	 * Creates a new Vtimezone object.

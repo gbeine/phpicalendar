@@ -12,6 +12,9 @@
  * This class is for calendars.
  * 
  * [Optional long description of this class]
+ * @todo	Consider renaming this class to something more descriptive.
+ * 			"Standard" could mean anything; it is not obvious when scanning the
+ *			list of classes that "standard" is in the context of timezones.  
  *
  */
 class Standard extends Vtimezone {
