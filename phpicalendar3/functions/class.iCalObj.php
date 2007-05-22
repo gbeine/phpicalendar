@@ -59,7 +59,7 @@ class iCalObj {
 		switch ($key)
 		{
 			case '':
-		
+				break;
 			default:
 				$line = str_replace("$key:","",$line);
 				$varname = strtolower($key);
@@ -103,6 +103,17 @@ class iCalObj {
 		$data = str_replace('$', '&#36;', $data);
 		$data = stripslashes($data);
 		return $data;
+	}
+
+	/**
+	 * Dumps object state for debugging.
+	 *
+	 * @access public
+	 * prints object
+	 */
+	function dump() {
+		echo "<pre>";print_r($this);echo "</pre>";
+		return true;
 	}
 
 } ?>
