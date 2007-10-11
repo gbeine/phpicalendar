@@ -20,4 +20,10 @@ class Vtimezone extends iCalObj {
 	 */
 	function Vtimezone() {}
 
+	function process_child($obj) {
+		#echo "\t".get_class($this)." object processing child of type ".get_class($obj)."\n";			
+		$this->{get_class($obj)} = $obj;
+	}
+
+
 } ?>

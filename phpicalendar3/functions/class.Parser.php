@@ -84,7 +84,7 @@ class Parser {
 	function process_file($filename) {
 		$obj = null;
 		$obj_stack = array();
-		
+		$tz_list = array();
 		if (!$this->open_file($filename))
 			return "can't open file"; 
 		
@@ -99,8 +99,7 @@ class Parser {
 				$key = $tmp2[0]; #want the first string before either a colon or semicolon
 				# echo "key:$key\n";
 				
-				switch ($key)
-				{
+				switch ($key){
 					case 'BEGIN':
 						$type = ucfirst(strtolower($tmp[1]));
 						
@@ -123,7 +122,12 @@ class Parser {
 					
 					case 'END':
 						$obj = array_pop($obj_stack);
-						
+						switch (get_class($obj)){
+							case 'Vtimezone': $this->tz_list[$obj->tzid] = $obj; break;
+							case 'Vevent': $this->event_list[$obj->uid] = $obj; break;
+							case 'Vtodo': $this->todo_list[] = $obj; break;
+							case 'Vfreebusy': $this->freebusy_list[] = $obj; break;
+						}
 						if (is_object(end($obj_stack))) {
 							$parent_obj = end($obj_stack);
 							$parent_obj->process_child($obj); # let the parent object set whatever it needs from the child
@@ -163,7 +167,8 @@ class Parser {
 
 		}
 		
-		print_r($this->cal);
+	#	print_r($this->cal);
+	#	print_r($tz_list);
 		
 		return true;
 	} // end function process_file()

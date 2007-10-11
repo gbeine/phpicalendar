@@ -53,8 +53,7 @@ class iCalObj {
 	 * @access public
 	 */
 	function process_line($key, $line) {
-		echo "\tfeed key= $key line=$line to the object of type ".
-			get_class($this)."\n";
+		#echo "\tfeed key= $key line=$line to the object of type ".	get_class($this)."\n";
 		
 		switch ($key)
 		{
@@ -72,8 +71,7 @@ class iCalObj {
 	 * @access public
 	 */
 	function process_child($obj) {
-		echo "\t".get_class($this)." object processing child of type ".
-			get_class($obj)."\n";
+		#echo "\t".get_class($this)." object processing child of type ".	get_class($obj)."\n";
 			
 		$this->children[] = $obj;
 	}
@@ -85,7 +83,7 @@ class iCalObj {
 	 * @access public
 	 */
 	function finish() {
-		echo "END:tell the ".get_class($this)." object to finish up, pop it off the stack.\n";
+		#echo "END:tell the ".get_class($this)." object to finish up, pop it off the stack.\n";
 	}
 	
 	

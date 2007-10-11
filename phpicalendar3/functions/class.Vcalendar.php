@@ -25,4 +25,10 @@ class Vcalendar extends iCalObj {
 	 */
 	function Vcalendar() {}
 
+	function process_child($obj) {
+		#echo "\t".get_class($this)." object processing child of type ".get_class($obj)."\n";
+			
+	#	$this->children[] = $obj;
+	}
+
 } ?>

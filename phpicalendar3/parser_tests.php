@@ -19,8 +19,11 @@ $calendar = new Vcalendar;
 $parser = new Parser;
 
 # test line folder
-if (!$parser->process_file('calendars/Deutsche_Feiertage.ics'))
-	echo 'failed open';
+#if (!$parser->process_file('calendars/Deutsche_Feiertage.ics'))	echo 'failed open';
+
+#print_r($parser);
+if (!$parser->process_file('calendars/US32Holidays.ics'))	echo 'failed open';
+print_r($parser);
 
 $start = 42929730712;
 
