@@ -87,9 +87,9 @@ $lang['l_priority_low']		= 'Low';
 $lang['l_priority_medium']	= 'Medium';
 $lang['l_priority_none']	= 'None';
 $lang['l_status']			= 'Status';
-$lang['l_status_confirmed'] = 'CONFIRMED' ; 
-$lang['l_status_cancelled'] = 'CANCELLED'; 
-$lang['l_status_tentative'] = 'TENTATIVE'; 
+$lang['l_status_confirmed'] = 'CONFIRMED' ;
+$lang['l_status_cancelled'] = 'CANCELLED';
+$lang['l_status_tentative'] = 'TENTATIVE';
 $lang['l_todo']				= 'To do items';
 $lang['l_unfinished']		= 'Unfinished';
 $lang['l_prefs_set'] 		= 'Your preferences have been set.';
@@ -143,6 +143,11 @@ $lang['l_week_view'] 	= 'Week View';
 $lang['l_month_view'] 	= 'Month View';
 $lang['l_year_view'] 	= 'Year View';
 
+
+// New is version 2.32
+$lang['l_edit']			= 'Edit';
+$lang['l_edit_event']	= 'Edit Event';
+
 // ---------------------------------
 
 
@@ -189,9 +194,9 @@ $dateFormat_year = '%Y';
 
 /*
 Notes about dateFormat_*
-	The pieces are similar to that of the PHP function strftime(), 
+	The pieces are similar to that of the PHP function strftime(),
 	however only the following is supported at this time:
-	
+
 	%A - the full week day name as specified in $daysofweek_lang
 	%a - the shortened week day name as specified in $daysofweekshort_lang
 	%B - the full month name as specified in $monthsofyear_lang

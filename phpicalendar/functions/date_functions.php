@@ -36,7 +36,7 @@ function dateOfWeek($Ymd, $day) {
 	return $ret;
 }
 
-// function to compare to dates in Ymd and return the number of weeks 
+// function to compare to dates in Ymd and return the number of weeks
 // that differ between them. requires dateOfWeek()
 function weekCompare($now, $then) {
 	global $week_start_day;
@@ -48,7 +48,7 @@ function weekCompare($now, $then) {
 	return $diff_weeks;
 }
 
-// function to compare to dates in Ymd and return the number of days 
+// function to compare to dates in Ymd and return the number of days
 // that differ between them.
 function dayCompare($now, $then) {
 	$seconds_now = strtotime($now);
@@ -57,11 +57,11 @@ function dayCompare($now, $then) {
 	$diff_minutes = $diff_seconds/60;
 	$diff_hours = $diff_minutes/60;
 	$diff_days = round($diff_hours/24);
-	
+
 	return $diff_days;
 }
 
-// function to compare to dates in Ymd and return the number of months 
+// function to compare to dates in Ymd and return the number of months
 // that differ between them.
 function monthCompare($now, $then) {
 	ereg ("([0-9]{4})([0-9]{2})([0-9]{2})", $now, $date_now);
@@ -97,7 +97,7 @@ function localizeDate($format, $timestamp) {
 	$year = date("Y", $timestamp);
 	$month = date("n", $timestamp)-1;
 	$day = date("j", $timestamp);
-	$dayofweek = date("w", $timestamp);	
+	$dayofweek = date("w", $timestamp);
 	$weeknumber = date("W", $timestamp);
  	$replacements = array(
  		'%Y' =>	$year,
@@ -109,9 +109,9 @@ function localizeDate($format, $timestamp) {
  		'%W' => $weeknumber,
  		'%d' => sprintf("%02d", $day)
  	);
- 	$date = str_replace(array_keys($replacements), array_values($replacements), $format);	
-	return $date;	
-	
+ 	$date = str_replace(array_keys($replacements), array_values($replacements), $format);
+	return $date;
+
 }
 // calcOffset takes an offset (ie, -0500) and returns it in the number of seconds
 function calcOffset($offset_str) {
@@ -155,17 +155,17 @@ function chooseOffset($time, $timezone = '') {
 	}
 	return $offset;
 }
-/* Returns a string to make event text with a link to popup boxes 
+/* Returns a string to make event text with a link to popup boxes
 	$arr is a master array item
 	$lines is the number of lines to restrict the event_text to, using word_wrap
 	$length is the length of one line
 	$link_class is a css class
 	$pre_text and $post_text are to add tags around the link text (e.g. <b> or<i>)
-	
+
 	$title is the tooltip for the link
 */
 function openevent($event_date, $time, $uid, $arr, $lines = 0, $length = 0, $link_class = '', $pre_text = '', $post_text = '') {
-	global $cpath, $timeFormat, $dateFormat_week;
+	global $cpath, $timeFormat, $dateFormat_week, $phpiCal_config, $username, $password, $invalid_login, $lang;
 	$return = '';
 	$event_text = stripslashes(urldecode($arr["event_text"]));
 	# build tooltip
@@ -216,6 +216,19 @@ function openevent($event_date, $time, $uid, $arr, $lines = 0, $length = 0, $lin
 			$return .= '<a class="'.$link_class.'" title="'.$title.'" href="'.$res[1].'">';
 		}
 		$return .= $pre_text.$event_text.$post_text.'</a>'."\n";
+
+		// Require a valid user login to edit calendar events
+		if (($phpiCal_config->allow_edit == 'yes') && ($invalid_login === false) && ($username != '') && ($password != '')) {
+			static $popup_edit_index = 0;
+			$return = '<script language="JavaScript" type="text/javascript"><!--
+				var editData = new EditData("' . $arr['calname'] . '", "' . $uid . '");
+				document.edit_data[' . $popup_edit_index . '] = editData;
+				// --></script>' .
+				'<a href="#" title="' . $lang['l_edit_event'] . '" onclick="openEditWindow(' . $popup_edit_index . '); return false;">' .
+				'<img alt="' . $lang['l_edit'] . '" src="' . BASE . 'templates/' . $phpiCal_config->template . '/images/pencil.gif" border="0" />' .
+				'</a> ' . $return;
+			$popup_edit_index++;
+		}
 	}
 
 	return $return;
@@ -227,8 +240,8 @@ function openevent($event_date, $time, $uid, $arr, $lines = 0, $length = 0, $lin
 	$data		= A string representing a date-time per RFC2445.
 	$property	= The property being examined, e.g. DTSTART, DTEND.
 	$field		= The full field being examined, e.g. DTSTART;TZID=US/Pacific
-	
-See:http://phpicalendar.org/documentation/index.php/Property_Value_Data_Types#4.3.5___Date-Time	
+
+See:http://phpicalendar.org/documentation/index.php/Property_Value_Data_Types#4.3.5___Date-Time
 */
 function extractDateTime($data, $property, $field) {
 	global $tz_array, $phpiCal_config, $calendar_tz;
@@ -243,14 +256,14 @@ function extractDateTime($data, $property, $field) {
 	} elseif ($zulu_time) {
 		$tz_dt = 'GMT';
 	}
-	
+
 	// Extract date-only values.
 	if ((preg_match('/^'.$property.';VALUE=DATE:/i', $field)) || (ereg ('^([0-9]{4})([0-9]{2})([0-9]{2})$', $data)))  {
 		// Pull out the date value. Minimum year is 1970.
 		ereg ('([0-9]{4})([0-9]{2})([0-9]{2})', $data, $dt_check);
-		if ($dt_check[1] < 1970) { 
+		if ($dt_check[1] < 1970) {
 			$dt_check[1] = '1970';
-		}		
+		}
 		# convert to date-time
 		$data = $dt_check[1].$dt_check[2].$dt_check[3]."T000000";
 		$time = '';
@@ -260,7 +273,7 @@ function extractDateTime($data, $property, $field) {
 	// Pull out the date and time values. Minimum year is 1970.
 	preg_match ('/([0-9]{4})([0-9]{2})([0-9]{2})T{0,1}([0-9]{0,2})([0-9]{0,2})/', $data, $regs);
 	if (!isset ($regs[1])) return;
-	if ($regs[1] < 1970) { 
+	if ($regs[1] < 1970) {
 		$regs[1] = '1970';
 	}
 	$date = $regs[1] . $regs[2] . $regs[3];
@@ -282,7 +295,7 @@ function extractDateTime($data, $property, $field) {
 	#echo "offset_tmp $offset_tmp, server_offset_tmp $server_offset_tmp, $unixtime =".date("Ymd His",$unixtime)." $time<br>";
 	$date = date('Ymd', $unixtime);
 	if ($allday == '') $time = date('Hi', $unixtime);
-		
+
 	// Return the results.
 	return array($unixtime, $date, $time, $allday, $tz_dt);
 }

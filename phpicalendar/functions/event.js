@@ -9,7 +9,7 @@ function openEventWindow(num) {
 	form.elements.uid.value = data.uid;
 	form.elements.cpath.value = data.cpath;
 	form.elements.event_data.value = data.event_data;
-	
+
 	// open a new window
 	var w = window.open('', 'Popup', 'scrollbars=yes,width=460,height=275');
 	form.target = 'Popup';
@@ -23,12 +23,32 @@ function EventData(date, time, uid, cpath, event_data) {
 	this.cpath = cpath;
 	this.event_data = event_data;
 }
-//-->
-</script>
-<script language="JavaScript" type="text/javascript">
-<!--
 
-function openTodoInfo(num) {	
+document.popup_data = new Array();
+
+
+function openEditWindow(num) {
+	// populate the hidden form
+	var data = document.edit_data[num];
+	var form = document.forms.editPopupForm;
+	form.elements.edit_cal.value = data.edit_cal;
+	form.elements.edit_uid.value = data.edit_uid;
+
+	// open a new window
+	var w = window.open('', 'Popup', 'scrollbars=yes,width=460,height=275');
+	form.target = 'Popup';
+	form.submit();
+}
+
+function EditData(edit_cal, edit_uid) {
+	this.edit_cal = edit_cal;
+	this.edit_uid = edit_uid;
+}
+
+document.edit_data = new Array();
+
+
+function openTodoInfo(num) {
 	// populate the hidden form
 	var data = document.todo_popup_data[num];
 	var form = document.forms.todoPopupForm;
@@ -40,12 +60,12 @@ function openTodoInfo(num) {
 	form.target = 'Popup';
 	form.submit();
 }
+
 function TodoData(todo_data,todo_text) {
 	this.todo_data = todo_data;
 	this.todo_text = todo_text;
 }
 
-document.popup_data = new Array();
 document.todo_popup_data = new Array();
 //-->
 </script>
