@@ -221,7 +221,7 @@ function openevent($event_date, $time, $uid, $arr, $lines = 0, $length = 0, $lin
 		if (($phpiCal_config->allow_edit == 'yes') && ($invalid_login === false) && ($username != '') && ($password != '')) {
 			static $popup_edit_index = 0;
 			$return = '<script language="JavaScript" type="text/javascript"><!--
-				var editData = new EditData("' . $arr['calname'] . '", "' . $uid . '");
+				var editData = new EditData("' . basename($_SERVER['SCRIPT_FILENAME']) . '", "' . addslashes($uid) . '", "' . addslashes(serialize($arr)) . '");
 				document.edit_data[' . $popup_edit_index . '] = editData;
 				// --></script>' .
 				'<a href="#" title="' . $lang['l_edit_event'] . '" onclick="openEditWindow(' . $popup_edit_index . '); return false;">' .

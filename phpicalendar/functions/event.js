@@ -31,18 +31,20 @@ function openEditWindow(num) {
 	// populate the hidden form
 	var data = document.edit_data[num];
 	var form = document.forms.editPopupForm;
-	form.elements.edit_cal.value = data.edit_cal;
+	form.elements.edit_from.value = data.edit_from;
 	form.elements.edit_uid.value = data.edit_uid;
+	form.elements.edit_arr.value = data.edit_arr;
 
 	// open a new window
-	var w = window.open('', 'Popup', 'scrollbars=yes,width=460,height=275');
+	var w = window.open('', 'Popup', 'scrollbars=yes,width=460,height=325');
 	form.target = 'Popup';
 	form.submit();
 }
 
-function EditData(edit_cal, edit_uid) {
-	this.edit_cal = edit_cal;
+function EditData(edit_from, edit_uid, edit_arr) {
+	this.edit_from = edit_from;
 	this.edit_uid = edit_uid;
+	this.edit_arr = edit_arr;
 }
 
 document.edit_data = new Array();

@@ -19,8 +19,9 @@
   <input type="hidden" name="event_data" id="event_data" value="" />
 </form>
 <form name="editPopupForm" id="editPopupForm" method="post" action="includes/edit.php" style="display: none;">
-  <input type="hidden" name="edit_cal" id="edit_cal" value="" />
+  <input type="hidden" name="edit_from" id="edit_from" value="" />
   <input type="hidden" name="edit_uid" id="edit_uid" value="" />
+  <input type="hidden" name="edit_arr" id="edit_arr" value="" />
 </form>
 <form name="todoPopupForm" id="todoPopupForm" method="post" action="includes/todo.php" style="display: none;">
   <input type="hidden" name="todo_data" id="todo_data" value="" />
