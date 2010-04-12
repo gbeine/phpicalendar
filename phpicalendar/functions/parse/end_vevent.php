@@ -29,8 +29,8 @@ if (!isset($uid)) {
 	$uid_counter++;
 	$uid_valid = false;
 }elseif(in_array($uid, $uid_list)) {
-	#$uid .= $uid_counter;
-	#$uid_counter++;
+	# UID seen before. If sequence is the default, bump it.
+	if ($sequence == 0) $sequence++;
 }else{
 	$uid_valid = true;
 }
@@ -66,7 +66,7 @@ if ($length < 0){
 	$end_time = $start_time;
 }
 # get hour and minute adjusted to allowed grid times
-$drawKey = drawEventTimes($start_time, $end_time);
+$drawKey = drawEventTimes($start_time, $end_time, ($length >= (60*60*24)));
 preg_match ('/([0-9]{2})([0-9]{2})/', $drawKey['draw_start'], $time3);
 preg_match ('/([0-9]{2})([0-9]{2})/', $drawKey['draw_end'], $time4);
 $hour = $time3[1];
@@ -321,7 +321,8 @@ foreach($recur_data as $recur_data_unixtime) {
 		}
 		if($this_date_tmp == $end_date_tmp && ($end_time == '0000')) continue;
 		if(!isset($master_array[$this_date_tmp][$time_key][$uid]['sequence']) || 
-			$sequence >  $master_array[$this_date_tmp][$time_key][$uid]['sequence']){
+			$sequence >  $master_array[$this_date_tmp][$time_key][$uid]['sequence']
+			){
 			$master_array[$this_date_tmp][$time_key][$uid] = array (
 				'event_start' => $start_time,                	# hhmm
 				'event_end' => $end_time,                    	# hhmm
@@ -348,7 +349,7 @@ foreach($recur_data as $recur_data_unixtime) {
 				'sequence' => $sequence, 
 				'recur' => $recur
 				);
-		}	
+		}
 		if($time_key > -1) checkOverlap($this_date_tmp, $time_key, $uid);
 	}
 } # end foreach recur_data 

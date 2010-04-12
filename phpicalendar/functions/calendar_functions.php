@@ -187,6 +187,10 @@ function display_ical_list($cals, $pick=FALSE) {
 	global $cal, $current_view, $getdate, $lang, $calendar_lang, $all_cal_comb_lang, $cal_filelist, $cal_displaynames, $list_webcals, $phpiCal_config;
 	// Print each calendar option.
 	$return = '';
+
+	$all_cals = false;
+	if (count($cals) > 1) $all_cals = true;
+
 	foreach ($cals as $cal_tmp) {
 		// Format the calendar path for display.
 		//
@@ -244,6 +248,10 @@ function display_ical_list($cals, $pick=FALSE) {
 		if(in_array($cal_tmp, $list_webcals)){
 			$cal_encoded_tmp = md5($phpiCal_config->salt.$cal_tmp);;
 		}
+
+		// Try to detect unselected calendars
+		if (!in_array($cal_encoded_tmp, explode(",", $cal))) $all_cals = false;
+
 		// Display the option.
 		//
 		// The submitted calendar will be encoded, and always use http://
@@ -251,27 +259,27 @@ function display_ical_list($cals, $pick=FALSE) {
 		// trying to figure out if this is the selected calendar.
 		if($pick) {
 			if (in_array($cal_encoded_tmp, explode(",", $cal)) || count($cals) == count(explode(",", $cal))) {
-					$return .= "<option value=\"$cal_encoded_tmp\" selected=\"selected\">$cal_displayname_tmp</option>\n";
+				$return .= "<option value=\"$cal_encoded_tmp\" selected=\"selected\">$cal_displayname_tmp</option>\n";
 			} else {
-					$return .= "<option value=\"$cal_encoded_tmp\">$cal_displayname_tmp</option>\n";	
+				$return .= "<option value=\"$cal_encoded_tmp\">$cal_displayname_tmp</option>\n";
 			}
 		} else {
-		$cal_httpPrefix_tmp = str_replace('webcal://', 'http://', $cal_tmp);
-		if ($cal_encoded_tmp == urldecode($cal)) {
-			$return .= "<option value=\"$current_view.php?cal=$cal_encoded_tmp&amp;getdate=$getdate\" selected=\"selected\">$cal_displayname_tmp</option>";
-		} else {
-			$return .= "<option value=\"$current_view.php?cal=$cal_encoded_tmp&amp;getdate=$getdate\">$cal_displayname_tmp</option>";	
+			if ($cal_encoded_tmp == $cal || $cal_encoded_tmp == urldecode($cal)) {
+				$return .= "<option value=\"$current_view.php?cal=$cal_encoded_tmp&amp;getdate=$getdate\" selected=\"selected\">$cal_displayname_tmp</option>";
+			} else {
+				$return .= "<option value=\"$current_view.php?cal=$cal_encoded_tmp&amp;getdate=$getdate\">$cal_displayname_tmp</option>";	
+			}
 		}
-	 }			
 	}			
 
 	// option to open all (non-web) calenders together
 	if (!$pick) {
-		if ($cal == $phpiCal_config->ALL_CALENDARS_COMBINED) {
+		if ($all_cals || $cal == $phpiCal_config->ALL_CALENDARS_COMBINED) {
 			$return .=  "<option value=\"$current_view.php?cal=$phpiCal_config->ALL_CALENDARS_COMBINED&amp;getdate=$getdate\" selected=\"selected\">$all_cal_comb_lang</option>";
 		} else {
 			$return .=  "<option value=\"$current_view.php?cal=$phpiCal_config->ALL_CALENDARS_COMBINED&amp;getdate=$getdate\">$all_cal_comb_lang</option>";
 		}
 	}
+
 	return $return;
 }

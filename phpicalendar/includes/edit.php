@@ -16,6 +16,18 @@ $organizers     = unserialize($arr['organizer']);
 $attendees      = unserialize($arr['attendee']);
 
 
+// Format event time
+$start = date('Y-m-d H:i', $arr['start_unixtime']);
+if ($arr['spans_day']) {
+    $allday = 1;
+    $end = '';
+}
+else {
+    $end = date('Y-m-d H:i', $arr['end_unixtime']);
+    $allday = 0;
+}
+
+
 // Sanitize input fields
 $arr['event_text']  = sanitizeForWeb(urldecode($arr['event_text']));
 $arr['description'] = sanitizeForWeb(urldecode($arr['description']));
@@ -77,6 +89,9 @@ $page->replace_tags(array(
     'calname'           => $arr['calname'],
     'calnumber'         => $calnumber,
     'event_text'        => $arr['event_text'],
+    'event_start'       => $start,
+    'event_end'         => $end,
+    'allday'            => $allday,
     'description'       => $arr['description'],
     'location'          => $arr['location'],
     'organizer'         => $organizer,
@@ -87,6 +102,8 @@ $page->replace_tags(array(
     'url'               => $arr['url'],
     'template'          => $phpiCal_config->template,
     'l_calendar'        => $lang['l_calendar'],
+    'l_event_start'     => $lang['l_event_start'],
+    'l_event_end'       => $lang['l_event_end'],
     'l_description'     => $lang['l_description'],
     'l_summary'         => $lang['l_summary'],
 	'l_organizer'		=> $lang['l_organizer'],

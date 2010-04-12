@@ -4,6 +4,30 @@ require_once(BASE."functions/is_daylight.php");
 // functions for returning or comparing dates
 
 
+// get remote file last modification date (returns unix timestamp)
+function remote_filemtime($url) {
+	$fp = fopen($url, 'r');
+	if (!$fp) return 0;
+	$metadata = stream_get_meta_data($fp);
+	fclose($fp);
+
+	$unixtime = 0;
+	foreach ($metadata['wrapper_data'] as $response) {
+		// case: redirection
+		// WARNING: does not handle relative redirection
+		if (substr(strtolower($response), 0, 10) == 'location: ') {
+			return GetRemoteLastModified(substr($response, 10));
+		}
+		// case: last-modified
+		else if (substr(strtolower($response), 0, 15) == 'last-modified: ') {
+			$unixtime = strtotime(substr($response, 15));
+			break;
+		}
+	}
+
+	return $unixtime;
+}
+
 // takes iCalendar 2 day format and makes it into 3 characters
 // if $txt is true, it returns the 3 letters, otherwise it returns the
 // integer of that day; 0=Sun, 1=Mon, etc.
@@ -155,6 +179,38 @@ function chooseOffset($time, $timezone = '') {
 	}
 	return $offset;
 }
+
+/* Returns a string to be used in HTML title attributes
+	$arr is a master array item
+	$time is the event's UNIX timestamp
+*/
+function makeTitle($arr, $time) {
+	global $timeFormat, $dateFormat_week;
+
+	$event_text = chopToWordCount(sanitizeForWeb(urldecode($arr["event_text"])), 20);
+	if ($time == -1) {
+		$start = localizeDate($dateFormat_week, $arr['start_unixtime']);
+		$end   = localizeDate($dateFormat_week, ($arr['end_unixtime'] - 60));
+		$title = $event_text;
+		if ($start != $end) $title .= "\n$start - $end";
+	} else {
+		$start = date($timeFormat, $arr['start_unixtime']);
+		$end   = date($timeFormat, $arr['end_unixtime']);
+		$title = "$start: $event_text";
+		if ($start != $end) $title = "$event_text\n$start - $end";
+	}
+
+	if (!empty($arr['location'])) {
+		$title .= "\nLocation: " . chopToWordCount(sanitizeForWeb(urldecode($arr['location'])), 20);
+	}
+	if (!empty($arr['description'])) {
+		$title .= "\n\n" . chopToWordCount(sanitizeForWeb(urldecode($arr['description'])), 80);
+	}
+	$title = trim($title);
+
+	return $title;
+}
+
 /* Returns a string to make event text with a link to popup boxes
 	$arr is a master array item
 	$lines is the number of lines to restrict the event_text to, using word_wrap
@@ -169,19 +225,7 @@ function openevent($event_date, $time, $uid, $arr, $lines = 0, $length = 0, $lin
 	$return = '';
 	$event_text = stripslashes(urldecode($arr["event_text"]));
 	# build tooltip
-	if ($time == -1) {
-		$start = localizeDate($dateFormat_week, $arr['start_unixtime']);
-		$end   = localizeDate($dateFormat_week, ($arr['end_unixtime'] - 60));
-		$title = $event_text;
-		if ($start != $end) $title = "$start - $end $event_text";
-	} else {
-		$start = date($timeFormat, $arr['start_unixtime']);
-		$end = date($timeFormat, $arr['end_unixtime']);
-		$title = "$start: $event_text";
-		if ($start != $end) $title = "$start - $end $event_text";
-	}
-	$title .= "\n".urldecode($arr['description'])."\n".urldecode($arr['location']);
-	$title = trim($title);
+	$title = makeTitle($arr, $time);
 	# for iCal pseudo tag <http> comptability
 	if (ereg("<([[:alpha:]]+://)([^<>[:space:]]+)>",$event_text,$matches)) {
 		$full_event_text = $matches[1] . $matches[2];
@@ -190,6 +234,8 @@ function openevent($event_date, $time, $uid, $arr, $lines = 0, $length = 0, $lin
 		$full_event_text = $event_text;
 		$event_text      = strip_tags($event_text, '<b><i><u><img>');
 	}
+	
+	if (!empty($link_class)) $link_class = ' class="'.$link_class.'"';
 
 	if (!empty($event_text)) {
 		$title = strip_tags(str_replace("<br />","\n",$title));
@@ -210,10 +256,10 @@ function openevent($event_date, $time, $uid, $arr, $lines = 0, $length = 0, $lin
 				document.popup_data[$popup_data_index] = eventData;
 				// --></script>";
 
-			$return .= '<a class="'.$link_class.'" title="'.$title.'" href="#" onclick="openEventWindow('.$popup_data_index.'); return false;">';
+			$return .= '<a'.$link_class.' title="'.$title.'" href="#" onclick="openEventWindow('.$popup_data_index.'); return false;">';
 			$popup_data_index++;
 		} else {
-			$return .= '<a class="'.$link_class.'" title="'.$title.'" href="'.$res[1].'">';
+			$return .= '<a'.$link_class.' title="'.$title.'" href="'.$res[1].'">';
 		}
 		$return .= $pre_text.$event_text.$post_text.'</a>'."\n";
 

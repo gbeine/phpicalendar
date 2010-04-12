@@ -5,7 +5,15 @@ require_once(BASE.'functions/ical_parser.php');
 require_once(BASE.'functions/list_functions.php');
 require_once(BASE.'functions/template.php');
 header("Content-Type: text/html; charset=$phpiCal_config->charset");
-if ($phpiCal_config->minical_view == 'current') $minical_view = 'month';
+
+$minical_view = $current_view;
+switch ($phpiCal_config->minical_view) {
+	case 'day':
+	case 'week':
+	case 'month':
+		$minical_view = $phpiCal_config->minical_view;
+		break;
+}
 
 $unix_time 				= strtotime($getdate);
 $today_today 			= date('Ymd', time() + $phpiCal_config->second_offset); 
@@ -76,7 +84,9 @@ $page->replace_tags(array(
 	'rss_available' 	=> '',
 	'rss_valid' 		=> '',
 	'show_search' 		=> $phpiCal_config->show_search,
+	'next_day' 			=> $tomorrows_date,
 	'next_month' 		=> $next_month,
+	'prev_day'	 		=> $yesterdays_date,
 	'prev_month'	 	=> $prev_month,
 	'show_goto' 		=> '',
 	'show_user_login'	=> $show_user_login,
@@ -102,6 +112,8 @@ $page->replace_tags(array(
 	'l_tomorrows'		=> $lang['l_tomorrows'],
 	'l_jump'			=> $lang['l_jump'],
 	'l_todo'			=> $lang['l_todo'],
+	'l_prev'			=> $lang['l_prev'],
+	'l_next'			=> $lang['l_next'],
 	'l_day'				=> $lang['l_day'],
 	'l_week'			=> $lang['l_week'],
 	'l_month'			=> $lang['l_month'],
@@ -140,10 +152,8 @@ if ($phpiCal_config->this_months_events == 'yes') {
 } else {
 	$page->nomonthbottom($page);
 }
+
 $page->draw_subscribe($page);
-
 $page->output();
-
-
 
 ?>

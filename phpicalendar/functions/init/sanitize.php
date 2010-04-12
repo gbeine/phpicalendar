@@ -32,7 +32,23 @@ function recursiveSanitize($value) {
     return $value;
 }
 
+/**
+ * Truncate a string to a specific number of words
+ */
+function chopToWordCount($string, $count) {
+    $wc = str_word_count($string);
+    if ($wc > $count) {
+	$words = str_word_count($string, 2);
+	$last_word = array_slice($words, $count, 1, true);
+	$pos = key($last_word);
+	$string = substr($string, 0, $pos) . '...';
+    }
+    return $string;
+}
 
+/**
+ * Strip "dangerous" HTML to make it safe to print to web browsers
+ */
 function sanitizeForWeb($string) {
     $string = preg_replace('/<br\s*\/?>/', "\n", $string);
 
@@ -42,11 +58,11 @@ function sanitizeForWeb($string) {
     $string = str_replace('\'', '&#39;', $string);
     $string = str_replace('"', '&#34;', $string);
 
-    $string = str_replace('<br />', "\n", $string);
-    
+    $string = str_replace("\n", '<br />', $string);
+    $string = str_replace("\t", ' &nbsp; &nbsp; ', $string);
+
     return $string;
 }
-
 
 if (!isset($_SERVER) && isset($HTTP_SERVER_VARS)) {
 	$_SERVER = &$HTTP_SERVER_VARS;

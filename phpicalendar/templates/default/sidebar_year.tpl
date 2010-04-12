@@ -1,6 +1,6 @@
 <!-- switch show_user_login on -->
 <form style="margin-bottom:0;" action="{CURRENT_VIEW}.php?{LOGIN_QUERYS}" method="post">
-<input type="hidden" name="action" value="login" />
+<input type="hidden" name="form_action" value="login" />
 <table width="170" border="0" cellpadding="0" cellspacing="0" class="calborder">
 	<tr>
 		<td colspan="2" align="center" class="sideback"><div style="height: 17px; margin-top: 3px;" class="G10BOLD">{L_LOGIN}</div></td>
@@ -78,13 +78,34 @@
 		<td bgcolor="#FFFFFF" align="left">
 			<div style="padding: 5px;">
 				<form style="margin-bottom:0;" action="{CURRENT_VIEW}.php" method="get">
-					<select name="action" class="query_style" onchange="window.location=(this.options[this.selectedIndex].value);">{LIST_JUMPS}</select><br />
-					<select name="action" class="query_style" onchange="window.location=(this.options[this.selectedIndex].value);">{LIST_ICALS}</select><br />
-					<select name="action" class="query_style" onchange="window.location=(this.options[this.selectedIndex].value);">{LIST_YEARS}</select><br />
-					<select name="action" class="query_style" onchange="window.location=(this.options[this.selectedIndex].value);">{LIST_MONTHS}</select><br />
-					<select name="action" class="query_style" onchange="window.location=(this.options[this.selectedIndex].value);">{LIST_WEEKS}</select><br />
 					<input type="hidden" name="cpath" value="{CPATH}"/>
-
+					<input type="hidden" name="cal" value=""/>
+					<input type="hidden" name="getdate" value=""/>
+					<select name="form_action" class="query_style" onchange="submitform(this.form, this.options[this.selectedIndex].value);">{LIST_JUMPS}</select>
+				</form>
+				<form style="margin-bottom:0;" action="{CURRENT_VIEW}.php" method="get">
+					<input type="hidden" name="cpath" value="{CPATH}"/>
+					<input type="hidden" name="cal" value=""/>
+					<input type="hidden" name="getdate" value=""/>
+					<select name="form_action" class="query_style" onchange="submitform(this.form, this.options[this.selectedIndex].value);">{LIST_ICALS}</select>
+				</form>
+				<form style="margin-bottom:0;" action="{CURRENT_VIEW}.php" method="get">
+					<input type="hidden" name="cpath" value="{CPATH}"/>
+					<input type="hidden" name="cal" value=""/>
+					<input type="hidden" name="getdate" value=""/>
+					<select name="form_action" class="query_style" onchange="submitform(this.form, this.options[this.selectedIndex].value);">{LIST_YEARS}</select>
+				</form>
+				<form style="margin-bottom:0;" action="{CURRENT_VIEW}.php" method="get">
+					<input type="hidden" name="cpath" value="{CPATH}"/>
+					<input type="hidden" name="cal" value=""/>
+					<input type="hidden" name="getdate" value=""/>
+					<select name="form_action" class="query_style" onchange="submitform(this.form, this.options[this.selectedIndex].value);">{LIST_MONTHS}</select>
+				</form>
+				<form style="margin-bottom:0;" action="{CURRENT_VIEW}.php" method="get">
+					<input type="hidden" name="cpath" value="{CPATH}"/>
+					<input type="hidden" name="cal" value=""/>
+					<input type="hidden" name="getdate" value=""/>
+					<select name="form_action" class="query_style" onchange="submitform(this.form, this.options[this.selectedIndex].value);">{LIST_WEEKS}</select>
 				</form>
 				<!-- switch show_search on -->
 				{SEARCH_BOX}
@@ -181,7 +202,7 @@
 				</table>
 			</div>
 		</td>
-	</tr>			
+	</tr>
 </table>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>

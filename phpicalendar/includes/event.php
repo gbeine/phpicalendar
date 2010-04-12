@@ -30,25 +30,33 @@ if ($_POST['time'] == -1) {
 $event['event_text']  = sanitizeForWeb(urldecode($event['event_text']));
 $event['description'] = sanitizeForWeb(urldecode($event['description']));
 $event['location']    = sanitizeForWeb(urldecode($event['location']));
-$display ='';
-if (isset($event['description'])) $event['description'] = ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]",'<a target="_new" href="\0">\0</a>',$event['description']);
+if (isset($event['description'])) {
+	$event['description'] = ereg_replace("(blocked)?([[:alpha:]]+://([^<>&[:space:]]|&amp;)+[[:alnum:]/])", '<a target="_new" href="\2">\2</a>', $event['description']);
+	$event['description'] = ereg_replace("(blocked)?(mailto:)?([[:alnum:]_.%+-]+@[[:alnum:].-]+\.[[:alpha:]]{2,4})", '<a href="mailto:\3">\3</a>', $event['description']);
+}
 
 if (isset($organizer) && is_array($organizer)) {
 	$i=0;
-	$display .= $lang['l_organizer'] . ' - ';
 	$organizers = array();
-	foreach ($organizer as $val) {	
-		$organizers[] = $organizer[$i]["name"];
+	foreach ($organizer as $val) {
+		if (!empty($organizer[$i]["email"])) {
+			$organizers[] .= "<a href=\"mailto:{$organizer[$i]["email"]}\">{$organizer[$i]["name"]}</a>";
+		} else {
+			$organizers[] .= $organizer[$i]["name"];
+		}
 		$i++;
 	}
 	$organizer = implode(', ',$organizers);
 }
 if (isset($attendee) && is_array($attendee)) {
 	$i=0;
-	$display .= $lang['l_attendee'] . ' - ';
 	$attendees = array();
-	foreach ($attendee as $val) {	
-		$attendees[] .= $attendee[$i]["name"];
+	foreach ($attendee as $val) {
+		if (!empty($attendee[$i]["email"])) {
+			$attendees[] .= "<a href=\"mailto:{$attendee[$i]["email"]}\">{$attendee[$i]["name"]}</a>";
+		} else {
+			$attendees[] .= $attendee[$i]["name"];
+		}
 		$i++;
 	}
 	$attendee = implode(', ',$attendees);
@@ -108,14 +116,14 @@ $page->replace_tags(array(
 	'cal' 				=> $event['calname'],
 	'event_text' 		=> $event['event_text'],
 	'event_times' 		=> $event_times,
-	'description' 		=> str_replace('\n',"<br />",$event['description']),
+	'description' 		=> $event['description'],
 	'organizer' 		=> $organizer,
 	'attendee'	 		=> $attendee,
 	'status'	 		=> $event['status'],
 	'location' 			=> $event['location'],
 	'event_download'	=> $event_download,
 	'url'      			=> $event['url'],
-	'cal_title_full'	=> $event['calname'].' '.$lang['l_calendar'],
+	'cal_title_full'	=> $event['calname'],
 	'template'			=> $phpiCal_config->template,
 	'l_summary' 		=> $lang['l_summary'],
 	'l_description'		=> $lang['l_description'],

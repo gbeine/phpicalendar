@@ -11,7 +11,7 @@ function openEventWindow(num) {
 	form.elements.event_data.value = data.event_data;
 
 	// open a new window
-	var w = window.open('', 'Popup', 'scrollbars=yes,width=460,height=275');
+	var w = window.open('', 'Popup', 'scrollbars=yes,width=550,height=350');
 	form.target = 'Popup';
 	form.submit();
 }
@@ -36,7 +36,7 @@ function openEditWindow(num) {
 	form.elements.edit_arr.value = data.edit_arr;
 
 	// open a new window
-	var w = window.open('', 'Popup', 'scrollbars=yes,width=460,height=325');
+	var w = window.open('', 'Popup', 'scrollbars=yes,width=460,height=350');
 	form.target = 'Popup';
 	form.submit();
 }
@@ -58,7 +58,7 @@ function openTodoInfo(num) {
 	form.elements.todo_data.value = data.todo_data;
 
 	// open a new window
-	var w = window.open('', 'Popup', 'scrollbars=yes,width=460,height=275');
+	var w = window.open('', 'Popup', 'scrollbars=yes,width=550,height=350');
 	form.target = 'Popup';
 	form.submit();
 }
@@ -69,5 +69,36 @@ function TodoData(todo_data,todo_text) {
 }
 
 document.todo_popup_data = new Array();
+//-->
+</script>
+<script language="JavaScript" type="text/javascript">
+<!--
+
+function submitform(form, value) {
+	// Parse value.
+	var values = decodeURI(value).split("&");
+	var temp = values[0].split("?", 2);
+	var action = temp[0];
+	values[0] = temp[1];
+
+	try {
+		form.setAttribute("action", action);
+	}
+	catch(e) {
+		form.action = action;
+	}
+
+	// Stuff the hidden form fields.
+	for (var i = 0; i < values.length; i++) {
+		temp = values[i].split("=", 2);
+		form.elements.namedItem(temp[0]).value = temp[1];
+	}
+
+	// Clear the select+option value.
+	var select = form.elements.namedItem("form_action")
+	select.options[select.selectedIndex].value = "";
+
+	form.submit();
+}
 //-->
 </script>

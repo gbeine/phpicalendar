@@ -15,7 +15,14 @@ require_once(BASE.'functions/ical_parser.php');
 require_once(BASE.'functions/list_functions.php');
 require_once(BASE.'functions/template.php');
 
-if ($phpiCal_config->minical_view == 'current') $minical_view = 'day';
+$minical_view = $current_view;
+switch ($phpiCal_config->minical_view) {
+	case 'day':
+	case 'week':
+	case 'month':
+		$minical_view = $phpiCal_config->minical_view;
+		break;
+}
 
 $weekstart 		= 1;
 $unix_time 		= strtotime($getdate);
@@ -94,6 +101,8 @@ $page->replace_tags(array(
 	'l_tomorrows'		=> $lang['l_tomorrows'],
 	'l_jump'			=> $lang['l_jump'],
 	'l_todo'			=> $lang['l_todo'],
+	'l_prev'			=> $lang['l_prev'],
+	'l_next'			=> $lang['l_next'],
 	'l_day'				=> $lang['l_day'],
 	'l_week'			=> $lang['l_week'],
 	'l_month'			=> $lang['l_month'],

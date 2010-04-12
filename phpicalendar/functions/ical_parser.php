@@ -11,7 +11,7 @@ include_once(BASE.'functions/parse/recur_functions.php');
 $parse_file = true;
 if ($phpiCal_config->save_parsed_cals == 'yes') {	
 	if (sizeof ($cal_filelist) > 1) {
-		$parsedcal = $phpiCal_config->tmp_dir.'/parsedcal-'.urlencode($cpath.'::'.$cal_filename).'-'.$this_year;
+		$parsedcal = $phpiCal_config->tmp_dir.'/parsedcal-'.urlencode($cpath.'::'.$phpiCal_config->ALL_CALENDARS_COMBINED).'-'.$this_year;
 		if (file_exists($parsedcal)) {
 			$fd = fopen($parsedcal, 'r');
 			$contents = fread($fd, filesize($parsedcal));
@@ -19,17 +19,16 @@ if ($phpiCal_config->save_parsed_cals == 'yes') {
 			$master_array = unserialize($contents);
 			$z=1;
 			$y=0;
-			$webcal_mtime = time() - ($phpiCal_config->webcal_hours * 3600);
 			if (sizeof($master_array['-4']) == (sizeof($cal_filelist))) {
 				foreach ($master_array['-4'] as $temp_array) {
 					$mtime = $master_array['-4'][$z]['mtime'];
 					$fname = $master_array['-4'][$z]['filename'];
-					$wcalc = $master_array['-4'][$z]['webcal'];	
+					$wcalc = $master_array['-4'][$z]['webcal'];
+					
 					if ($wcalc == 'no') $realcal_mtime = filemtime($fname);
-					if (isset($realcal_mtime) && ($mtime == $realcal_mtime) && ($wcalc == 'no')) {
-						$y++;
-					} elseif (($wcalc == 'yes') && ($mtime > $webcal_mtime)) {
-						//echo date('H:i',$mtime). ' > '. date('H:i',$webcal_mtime);
+					else $realcal_mtime = remote_filemtime($fname);
+					
+					if ($mtime == $realcal_mtime) {
 						$y++;
 					}
 					$z++;
@@ -50,7 +49,13 @@ if ($phpiCal_config->save_parsed_cals == 'yes') {
 		if ($parse_file == true) unset($master_array);
 	} else {
 		foreach ($cal_filelist as $filename) {
-			$realcal_mtime = filemtime($filename);
+			if (substr($filename, 0, 7) == 'http://' || substr($filename, 0, 8) == 'https://' || substr($filename, 0, 9) == 'webcal://') {
+				$realcal_mtime = remote_filemtime($filename);
+			}
+			else {
+				$realcal_mtime = filemtime($filename);
+			}
+
 			$parsedcal = $phpiCal_config->tmp_dir.'/parsedcal-'.urlencode($cpath.'::'.$cal_filename).'-'.$this_year;
 			if (file_exists($parsedcal)) {
 				$parsedcal_mtime = filemtime($parsedcal);
@@ -84,16 +89,13 @@ foreach ($cal_filelist as $cal_key=>$filename) {
 	if ($parse_file) {	
 		
 		// Let's see if we're doing a webcal
-		$is_webcal = FALSE;
 		if (substr($filename, 0, 7) == 'http://' || substr($filename, 0, 8) == 'https://' || substr($filename, 0, 9) == 'webcal://') {
-			$is_webcal = TRUE;
-			$cal_webcalPrefix = str_replace('http://','webcal://',$filename);
-			$cal_httpPrefix = str_replace('webcal://','http://',$filename);
-			$cal_httpsPrefix = str_replace('webcal://','https://',$filename);
-			$cal_httpsPrefix = str_replace('http://','https://',$cal_httpsPrefix);
+			$cal_webcalPrefix = str_replace(array('http://', 'https://'), 'webcal://', $filename);
+			$cal_httpPrefix = str_replace(array('webcal://', 'https://'), 'http://', $filename);
+			$cal_httpsPrefix = str_replace(array('http://', 'webcal://'), 'https://', $filename);
 			$filename = $cal_httpPrefix;
 			$master_array['-4'][$calnumber]['webcal'] = 'yes';
-			$actual_mtime = time();
+			$actual_mtime = @remote_filemtime($filename);
 		} else {
 			$actual_mtime = @filemtime($filename);
 		}
@@ -104,7 +106,7 @@ foreach ($cal_filelist as $cal_key=>$filename) {
 		$ifile = @fopen($filename, "r");
 		if ($ifile == FALSE) exit(error($lang['l_error_cantopen'], $filename));
 		$nextline = fgets($ifile, 1024);
-		if (trim($nextline) != 'BEGIN:VCALENDAR') exit(error($lang['l_error_invalidcal'], $filename));
+		#if (trim($nextline) != 'BEGIN:VCALENDAR') exit(error($lang['l_error_invalidcal'], $filename));
 		
 		// Set a value so we can check to make sure $master_array contains valid data
 		$master_array['-1'] = 'valid cal file';
@@ -126,6 +128,7 @@ foreach ($cal_filelist as $cal_key=>$filename) {
 				$nextline = ereg_replace("[\r\n]", "", $nextline);
 			}
 			$line = str_replace('\n',"\n",$line);
+			$line = str_replace('\t',"\t",$line);
 			$line = trim(stripslashes($line));
 			switch ($line) {
 				case 'BEGIN:VFREEBUSY':
@@ -136,7 +139,7 @@ foreach ($cal_filelist as $cal_key=>$filename) {
 						$allday_start, $allday_end, $start, $end, $the_duration, 
 						$beginning, $start_of_vevent,
 						$valarm_description, $start_unixtime, $end_unixtime, $display_end_tmp, $end_time_tmp1, 
-						$recurrence_id, $uid, $rrule, $until_check,
+						$recurrence_id, $recurrence_d, $recurrence_, $uid, $rrule, $until_check,
 						$until, $byweek, $byweekno, 
 						$byminute, $byhour, $bysecond
 					);
@@ -217,6 +220,8 @@ foreach ($cal_filelist as $cal_key=>$filename) {
 					
 				case 'BEGIN:VTODO':
 					$vtodo_set = TRUE;
+					$start_date = '';
+					$start_time = '';
 					$summary = '';
 					$due_date = '';
 					$due_time = '';
@@ -321,9 +326,6 @@ foreach ($cal_filelist as $cal_key=>$filename) {
 							break;
 							
 						case 'SUMMARY':
-							$data = str_replace("\\n", "<br />", $data);
-							$data = str_replace("\\t", "&nbsp;", $data);
-							$data = str_replace("\\r", "<br />", $data);
 							$data = str_replace('$', '&#36;', $data);
 							$data = stripslashes($data);
 							$data = htmlentities(urlencode($data));
@@ -335,9 +337,6 @@ foreach ($cal_filelist as $cal_key=>$filename) {
 							break;
 							
 						case 'DESCRIPTION':
-							$data = str_replace("\n", "<br />", $data);
-							$data = str_replace("\\t", "&nbsp;", $data);
-							$data = str_replace("\r", "<br />", $data);
 							$data = str_replace('$', '&#36;', $data);
 							$data = stripslashes($data);
 							$data = htmlentities(urlencode($data));
@@ -425,16 +424,39 @@ foreach ($cal_filelist as $cal_key=>$filename) {
 							}
 							break;
 						case 'ATTENDEE':
-							$attendee[] = array ('name'    => ereg_replace ("ATTENDEE;CN=([^;]*).*", "\\1", $field), 
-												 'email'   => ereg_replace (".*mailto:(.*).*", "\\1", $field), 
-									        	 'RSVP'    => ereg_replace (".*RSVP=([^;]*).*", "\\1", $field),
-									        	 'PARSTAT' => ereg_replace (".*PARTSTAT=([^;]*).*", "\\1", $field),
-								         		 'ROLE'    => ereg_replace (".*ROLE=([^;]*).*", "\\1", $field));
+							$email		= preg_match("/mailto:(.*)/i", $data, $matches1);
+							$name		= preg_match("/CN=([^;]*)/i", $field, $matches2);
+							$rsvp 		= preg_match("/RSVP=([^;]*)/i", $field, $matches3);
+							$partstat	= preg_match("/PARTSTAT=([^;]*)/i", $field, $matches4);
+							$role		= preg_match("/ROLE=([^;]*)/i", $field, $matches5);
+
+							$email		= ($email ? $matches1[1] : '');
+							$name		= ($name ? $matches2[1] : $email);
+							$rsvp		= ($rsvp ? $matches3[1] : '');
+							$partstat	= ($partstat ? $matches4[1] : '');
+							$role		= ($role ? $matches5[1] : '');
+
+							// Emergency fallback
+							if (empty($name) && empty($email)) $name = $data;
+
+							$attendee[] = array ('name'     => stripslashes($name),
+												 'email'    => stripslashes($email),
+									        	 'RSVP'     => stripslashes($rsvp),
+									        	 'PARTSTAT' => stripslashes($partstat),
+								         		 'ROLE'     => stripslashes($role)
+												);
 							break;
 						case 'ORGANIZER':
-							$field 		 = str_replace("ORGANIZER;CN=", "", $field);
-							$data 		 = str_replace ("mailto:", "", $data);
-							$organizer[] = array ('name' => stripslashes($field), 'email' => stripslashes($data));
+							$email		= preg_match("/mailto:(.*)/i", $data, $matches1);
+							$name		= preg_match("/CN=([^;]*)/i", $field, $matches2);
+
+							$email		= ($email ? $matches1[1] : '');
+							$name		= ($name ? $matches2[1] : $email);
+
+							// Emergency fallback
+							if (empty($name) && empty($email)) $name = $data;
+
+							$organizer[] = array ('name' => stripslashes($name), 'email' => stripslashes($email));
 							break;
 						case 'LOCATION':
 							$data = str_replace("\\n", "<br />", $data);
@@ -483,6 +505,7 @@ if ($parse_file) {
 		@fwrite($fd, $write_me);
 		@fclose($fd);
 		@touch($parsedcal, $realcal_mtime);
+		@chmod($parsedcal, 0600); // 0640
 	}
 }
 

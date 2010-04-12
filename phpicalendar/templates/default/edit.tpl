@@ -24,7 +24,23 @@
 				<span style="margin-left: 10px; font-weight: bold;">{L_SUMMARY}: </span>
 			</td>
 			<td style="width: 315px;" align="left" class="V12">
-				<input name="event_text" id="event_text" style="width: 300px;" type="text" value="{EVENT_TEXT}" />
+				<input name="summary" id="summary" style="width: 300px;" type="text" value="{EVENT_TEXT}" />
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 115px;" align="left" class="V12">
+				<span style="margin-left: 10px; font-weight: bold;">{L_EVENT_START}: </span>
+			</td>
+			<td style="width: 315px;" align="left" class="V12">
+				{EVENT_START} {ALLDAY}
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 115px;" align="left" class="V12">
+				<span style="margin-left: 10px; font-weight: bold;">{L_EVENT_END}: </span>
+			</td>
+			<td style="width: 315px;" align="left" class="V12">
+				{EVENT_END}
 			</td>
 		</tr>
 		<tr>
@@ -76,7 +92,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2" align="center" class="title" style="margin-top: 2px; margin-bottom: 2px; border-top: 1px solid #ccc;">
+			<td colspan="2" align="center" class="title" style="padding-top: 3px; padding-bottom: 3px; border-top: 1px solid #ccc;">
 				<input name="calnumber" id="calnumber" type="hidden" value="{CALNUMBER}" />
 				<input name="uid" id="uid" type="hidden" value="{UID}" />
 				<input name="save" id="save" type="submit" value="Save" />
