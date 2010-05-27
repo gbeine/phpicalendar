@@ -25,12 +25,15 @@ function add_recur($times, $freq = '') {
 		$times = array_unique($times);
 		sort($times);
 	}
-	$until_date = date('Ymd', $end_range_unixtime);
 	foreach ($times as $time) {
 		if (!isset($time) || $time == '') continue;
+
 		// Why are we arbitrarily setting the time to noon?
 		$date = date('Ymd', $time);
 		$time = strtotime($date . ' 12:00:00');
+		$until_date = date('Ymd', $until_unixtime);
+		$until_unixtime = strtotime($until_date . ' 12:00:00');
+
 		# day offset fixes shifts across day boundaries due to time diffs.
 		# These are already fixed for the initial instance, but need to be fixed for recurrences
 		if (date('Ymd', $time) != $start_date) $time = $time + ($day_offset * 24 * 60 * 60);
