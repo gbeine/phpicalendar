@@ -42,11 +42,13 @@ if (!isset($end_unixtime)) {
 	$end_unixtime 	= $start_unixtime + $the_duration;
 	$end_time 	= date ('Hi', $end_unixtime);
 }
+
+$length = $end_unixtime - $start_unixtime;
 # at this point $end_unixtime should be set
 # adjust event start and end times
 if (isset($start_time) && isset($end_time)) {
-	// Mozilla style all-day events or just really long events
-	if (($end_unixtime - $start_unixtime) > 24*60*60) {
+	// Mozilla style all-day events (multiples of 24-hour length)
+	if ($length && (($length % 24*60*60) == 0)) {
 		$allday_start = $start_date;
 		$allday_end = ($start_date + 1);
 	}
@@ -58,13 +60,12 @@ if (isset($start_unixtime,$end_unixtime) && date('Ymd',$start_unixtime) < date('
 	$spans_day = false;
 }
 
-$length = $end_unixtime - $start_unixtime;
 if ($length < 0){ 
 	$length = 0;
 	$end_time = $start_time;
 }
 # get hour and minute adjusted to allowed grid times
-$drawKey = drawEventTimes($start_time, $end_time, ($length >= (60*60*24)));
+$drawKey = drawEventTimes($start_time, $end_time, ($length >= (24*60*60)));
 preg_match ('/([0-9]{2})([0-9]{2})/', $drawKey['draw_start'], $time3);
 preg_match ('/([0-9]{2})([0-9]{2})/', $drawKey['draw_end'], $time4);
 $hour = $time3[1];
