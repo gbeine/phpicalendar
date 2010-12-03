@@ -54,10 +54,8 @@ if (isset($start_time) && isset($end_time)) {
 # look for events that span more than one day
 if (isset($start_unixtime,$end_unixtime) && date('Ymd',$start_unixtime) < date('Ymd',$end_unixtime)) {
 	$spans_day = true;
-	$bleed_check = (($start_unixtime - $end_unixtime) <= (60*60*24)) ? '-1' : '0';
 } else {
 	$spans_day = false;
-	$bleed_check = 0;
 }
 
 $length = $end_unixtime - $start_unixtime;
