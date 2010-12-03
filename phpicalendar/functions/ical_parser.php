@@ -104,7 +104,7 @@ foreach ($cal_filelist as $cal_key=>$filename) {
 			 * - And again to collect the remaining data
 			 * See: http://phpicalendar.net/forums/viewtopic.php?f=45&t=4140#p14451
 			 */
-			$filename = tempnam(sys_get_temp_dir(), 'ICS');
+			$filename = tempnam($phpiCal_config->tmp_dir, 'ICS');
 			if (copy($cal_httpPrefix, $filename) === FALSE) {
 				exit(error($lang['l_copy_error'], $cal_httpPrefix));
 			}
